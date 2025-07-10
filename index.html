@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Productos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.0/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .modal-content form {
+            padding: 32px 24px 24px 24px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            padding: 14px 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1.5px solid #d1d5db;
+            margin-top: 4px;
+            background: #f8f9fa;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #764ba2;
+            outline: none;
+            background: #fff;
+        }
+        .form-actions {
+            display: flex;
+            gap: 18px;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+        .btn {
+            font-size: 1rem;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        .btn-secondary {
+            background: #f3f3f3;
+            color: #764ba2;
+            border: 1.5px solid #d1d5db;
+        }
+        .btn-secondary:hover {
+            background: #e9e9e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-store"></i> Sistema de Gestión de Productos</h1>
+            <p>Gestiona tus productos, costos y ganancias de manera eficiente</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-tab="productos">
+                <i class="fas fa-box"></i> Productos
+            </button>
+            <button class="nav-btn" data-tab="lotes">
+                <i class="fas fa-cubes"></i> Lotes
+            </button>
+            <button class="nav-btn" data-tab="ventas">
+                <i class="fas fa-shopping-cart"></i> Ventas
+            </button>
+            <button class="nav-btn" data-tab="ganancias">
+                <i class="fas fa-chart-line"></i> Ganancias
+            </button>
+            <button class="nav-btn" data-tab="reportes">
+                <i class="fas fa-chart-bar"></i> Reportes
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Selector de fecha/calendario -->
+            <div class="calendar-bar">
+                <label for="fechaSeleccionada"><i class="fas fa-calendar-alt"></i> Día:</label>
+                <input type="date" id="fechaSeleccionada" onchange="cambiarFechaSeleccionada()">
+                <button class="btn btn-secondary" onclick="irHoy()">Hoy</button>
+            </div>
+
+            <!-- Productos Tab -->
+            <div id="productos" class="tab-content active">
+                <div class="section-header">
+                    <h2><i class="fas fa-box"></i> Tus Productos</h2>
+                    <button class="btn btn-primary" onclick="mostrarModalProducto()">
+                        <i class="fas fa-plus"></i> Agregar producto
+                    </button>
+                </div>
+                
+                <div class="products-grid" id="productosGrid">
+                    <!-- Los productos se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Lotes de Producción Tab -->
+            <div id="lotes" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-cubes"></i> Lotes de Producción</h2>
+                    <button class="btn btn-primary" onclick="mostrarModalLote()">
+                        <i class="fas fa-plus"></i> Registrar lote
+                    </button>
+                </div>
+                <div class="lotes-container">
+                    <div class="lotes-list" id="lotesList">
+                        <!-- Los lotes se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ventas Tab -->
+            <div id="ventas" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-shopping-cart"></i> Tus Ventas</h2>
+                    <button class="btn btn-primary" onclick="mostrarModalVenta()">
+                        <i class="fas fa-plus"></i> Guardar venta
+                    </button>
+                </div>
+                
+                <div class="sales-container">
+                    <div class="sales-list" id="ventasList">
+                        <!-- Las ventas se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ganancias Tab -->
+            <div id="ganancias" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Resumen de tus ganancias</h2>
+                </div>
+                
+                <div class="profits-container">
+                    <div class="profit-cards">
+                        <div class="profit-card">
+                            <h3>Todo lo que vendiste</h3>
+                            <p class="amount" id="ingresosTotales">S/ 0.00</p>
+                        </div>
+                        <div class="profit-card">
+                            <h3>Todo lo que gastaste</h3>
+                            <p class="amount" id="costosTotales">S/ 0.00</p>
+                        </div>
+                        <div class="profit-card">
+                            <h3>Ganancia total</h3>
+                            <p class="amount" id="gananciaNeta">S/ 0.00</p>
+                        </div>
+                        <div class="profit-card">
+                            <h3>Porcentaje de ganancia</h3>
+                            <p class="amount" id="rentabilidad">0%</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-profits" id="productProfits">
+                        <!-- Las ganancias por producto se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes Tab -->
+            <div id="reportes" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> Reportes y evolución</h2>
+                    <div class="report-filters">
+                        <select id="reportPeriod" onchange="generarReporte()">
+                            <option value="hoy">Hoy</option>
+                            <option value="semana">Esta semana</option>
+                            <option value="mes">Este mes</option>
+                            <option value="todo">Todo el tiempo</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="abrirModalExportar()"><i class="fas fa-file-export"></i> Exportar</button>
+                    </div>
+                </div>
+                
+                <div class="reports-container">
+                    <div class="report-section">
+                        <h3>¿Qué producto te deja más ganancia?</h3>
+                        <div id="rankingProductos"></div>
+                    </div>
+                    
+                    <div class="report-section">
+                        <h3>¿Cómo van tus ventas?</h3>
+                        <div id="evolucionVentas"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área de reportes visuales -->
+            <div class="reportes-diarios" id="reportesDiarios">
+                <!-- Aquí se mostrarán los resúmenes y gráficas del día seleccionado -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modales -->
+    
+    <!-- Modal Producto -->
+    <div id="modalProducto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar un nuevo producto</h3>
+                <span class="close" onclick="cerrarModal('modalProducto')">&times;</span>
+            </div>
+            <form id="formProducto" onsubmit="guardarProducto(event)">
+                <div class="form-group">
+                    <label for="nombreProducto">¿Cómo se llama tu producto?</label>
+                    <input type="text" id="nombreProducto" required placeholder="Ejemplo: Donas, Galletas, Polos...">
+                </div>
+                <div class="form-group">
+                    <label for="precioVenta">¿A cuánto lo vendes? (S/)</label>
+                    <input type="number" id="precioVenta" step="0.01" required placeholder="Ejemplo: 2.50">
+                </div>
+                <div class="form-group">
+                    <label for="costoLote">¿Cuánto gastaste en total para hacer un lote? (S/)</label>
+                    <input type="number" id="costoLote" step="0.01" required placeholder="Ejemplo: 50">
+                </div>
+                <div class="form-group">
+                    <label for="cantidadLote">¿Cuántos productos hiciste en ese lote?</label>
+                    <input type="number" id="cantidadLote" required placeholder="Ejemplo: 20">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalProducto')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Lote de Producción -->
+    <div id="modalLote" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Registrar un nuevo lote</h3>
+                <span class="close" onclick="cerrarModal('modalLote')">&times;</span>
+            </div>
+            <form id="formLote" onsubmit="guardarLote(event)">
+                <div class="form-group">
+                    <label for="productoLote">¿Qué producto hiciste?</label>
+                    <select id="productoLote" required>
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cantidadLoteProd">¿Cuántos hiciste en este lote?</label>
+                    <input type="number" id="cantidadLoteProd" required placeholder="Ejemplo: 100">
+                </div>
+                <div class="form-group">
+                    <label for="costoLoteProd">¿Cuánto gastaste en total para este lote? (S/)</label>
+                    <input type="number" id="costoLoteProd" step="0.01" required placeholder="Ejemplo: 40">
+                </div>
+                <div class="form-group">
+                    <label for="fechaLote">¿En qué fecha lo hiciste?</label>
+                    <input type="date" id="fechaLote" required>
+                </div>
+                <div class="form-group">
+                    <label for="detalleLote">Detalle o notas (opcional)</label>
+                    <textarea id="detalleLote" rows="2" placeholder="Ejemplo: insumos, notas, etc."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalLote')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar lote</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Venta -->
+    <div id="modalVenta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Registrar una venta</h3>
+                <span class="close" onclick="cerrarModal('modalVenta')">&times;</span>
+            </div>
+            <form id="formVenta" onsubmit="guardarVenta(event)">
+                <div class="form-group">
+                    <label for="productoVenta">¿Qué producto vendiste?</label>
+                    <select id="productoVenta" required onchange="actualizarPrecioVenta()">
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cantidadVenta">¿Cuántos vendiste?</label>
+                    <input type="number" id="cantidadVenta" required oninput="calcularTotalVenta()" placeholder="Ejemplo: 5">
+                </div>
+                <div class="form-group">
+                    <label for="precioUnitarioVenta">¿A qué precio vendiste cada uno? (S/)</label>
+                    <input type="number" id="precioUnitarioVenta" step="0.01" required oninput="calcularTotalVenta()" placeholder="Ejemplo: 2.50">
+                </div>
+                <div class="form-group">
+                    <label for="totalVenta">Total de la venta (S/)</label>
+                    <input type="number" id="totalVenta" step="0.01" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="fechaVenta">¿En qué fecha vendiste?</label>
+                    <input type="date" id="fechaVenta" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalVenta')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar venta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Exportar -->
+    <div id="modalExportar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Exportar reportes</h3>
+                <span class="close" onclick="cerrarModal('modalExportar')">&times;</span>
+            </div>
+            <form id="formExportar" onsubmit="exportarDatos(event)">
+                <div class="form-group">
+                    <label>¿Qué formato deseas?</label>
+                    <select id="tipoExportacion" required>
+                        <option value="excel">Excel (.xlsx)</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>¿Qué rango de fechas?</label>
+                    <select id="rangoExportacion" onchange="mostrarFechasPersonalizadas()" required>
+                        <option value="hoy">Hoy</option>
+                        <option value="semana">Esta semana</option>
+                        <option value="mes">Este mes</option>
+                        <option value="todo">Todo el tiempo</option>
+                        <option value="personalizado">Personalizado</option>
+                    </select>
+                </div>
+                <div class="form-group" id="fechasPersonalizadas" style="display:none;">
+                    <label>Desde:</label>
+                    <input type="date" id="fechaInicioExport" required>
+                    <label>Hasta:</label>
+                    <input type="date" id="fechaFinExport" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalExportar')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Exportar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
