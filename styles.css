@@ -6,10 +6,10 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     min-height: 100vh;
-    color: #333;
+    color: #22223b;
 }
 
 .container {
@@ -22,7 +22,8 @@ body {
 .header {
     text-align: center;
     margin-bottom: 30px;
-    color: white;
+    color: #fff;
+    text-shadow: 2px 2px 8px rgba(106,17,203,0.15);
 }
 
 .header h1 {
@@ -46,34 +47,37 @@ body {
 }
 
 .nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
     padding: 12px 20px;
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
     backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(106,17,203,0.08);
 }
 
 .nav-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+    color: #fff;
+    border-color: #ee0979;
 }
 
 .nav-btn.active {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #ff6a00 0%, #ee0979 100%);
+    color: #fff;
+    border-color: #ff6a00;
+    box-shadow: 0 4px 18px rgba(255,106,0,0.15);
 }
 
 /* Main Content */
 .main-content {
-    background: white;
-    border-radius: 20px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 24px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 32px rgba(106,17,203,0.10);
     backdrop-filter: blur(10px);
 }
 
@@ -96,7 +100,7 @@ body {
 }
 
 .section-header h2 {
-    color: #333;
+    color: #2575fc;
     font-size: 1.8rem;
 }
 
@@ -115,23 +119,26 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #ff6a00 0%, #ee0979 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255,106,0,0.10);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+    box-shadow: 0 6px 18px rgba(238,9,121,0.15);
 }
 
 .btn-secondary {
-    background: #f8f9fa;
-    color: #6c757d;
-    border: 1px solid #dee2e6;
+    background: #f3f3f3;
+    color: #6a11cb;
+    border: 1.5px solid #d1d5db;
 }
 
 .btn-secondary:hover {
-    background: #e9ecef;
+    background: #e9e9e9;
+    color: #ff6a00;
 }
 
 .btn-danger {
@@ -151,16 +158,17 @@ body {
 }
 
 .product-card {
-    background: #f8f9fa;
-    border-radius: 15px;
+    background: #fff;
+    border-radius: 18px;
     padding: 20px;
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
+    border: 1.5px solid #e0e0e0;
+    transition: box-shadow 0.3s, transform 0.3s;
+    box-shadow: 0 4px 18px rgba(106,17,203,0.07);
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 32px rgba(106,17,203,0.13);
+    transform: translateY(-6px) scale(1.03);
 }
 
 .product-header {
@@ -298,12 +306,12 @@ body {
 }
 
 .profit-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
     padding: 25px;
-    border-radius: 15px;
+    border-radius: 16px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 12px rgba(106,17,203,0.10);
 }
 
 .profit-card h3 {
@@ -315,6 +323,7 @@ body {
 .profit-card .amount {
     font-size: 1.8rem;
     font-weight: 700;
+    color: #ffea00;
 }
 
 .product-profits {
@@ -365,19 +374,20 @@ body {
 /* Reports */
 .reports-container {
     display: grid;
-    gap: 30px;
+    gap: 32px;
+    margin-top: 18px;
 }
-
 .report-section {
-    background: #f8f9fa;
-    border-radius: 15px;
-    padding: 25px;
-    border: 1px solid #e9ecef;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(67,198,172,0.08);
+    padding: 24px 18px;
 }
-
 .report-section h3 {
-    margin-bottom: 20px;
-    color: #333;
+    color: #43c6ac;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-weight: 700;
 }
 
 .report-filters select {
@@ -402,13 +412,13 @@ body {
 }
 
 .modal-content {
-    background-color: white;
+    background: #fff;
     margin: 5% auto;
     padding: 0;
-    border-radius: 15px;
+    border-radius: 20px;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 32px rgba(106,17,203,0.18);
     animation: modalSlideIn 0.3s ease;
 }
 
@@ -424,10 +434,10 @@ body {
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
     padding: 20px;
-    border-radius: 15px 15px 0 0;
+    border-radius: 20px 20px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -465,20 +475,18 @@ form {
     color: #333;
 }
 
-.form-group input,
-.form-group select {
+.form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    border-radius: 10px;
+    border: 1.5px solid #bdbdbd;
+    background: #f8f9fa;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.2s;
 }
-
-.form-group input:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: #667eea;
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #2575fc;
+    background: #fff;
 }
 
 .form-actions {
@@ -690,24 +698,68 @@ form {
     gap: 24px;
     margin-bottom: 32px;
 }
+/* Tarjetas de resumen visuales y amigables */
 .resumen-card {
-    background: white;
-    border-radius: 12px;
-    padding: 18px 24px;
-    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+    background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+    border-radius: 18px;
+    padding: 22px 28px;
+    box-shadow: 0 4px 18px rgba(67,198,172,0.10);
     min-width: 180px;
     flex: 1;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
 }
+.resumen-card:nth-child(1) { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+.resumen-card:nth-child(2) { background: linear-gradient(135deg, #fcb69f 0%, #ffecd2 100%); }
+.resumen-card:nth-child(3) { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.resumen-card:nth-child(4) { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
 .resumen-card h4 {
-    color: #764ba2;
-    font-size: 1.1rem;
+    color: #22223b;
+    font-size: 1.2rem;
     margin-bottom: 8px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 .resumen-card .valor {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
-    color: #333;
+    color: #22223b;
+    margin-bottom: 0.2em;
+}
+.resumen-card::before {
+    content: '';
+    font-size: 2.2rem;
+    position: absolute;
+    top: 12px;
+    left: 18px;
+    opacity: 0.18;
+}
+.resumen-card:nth-child(1)::before { content: '💰'; }
+.resumen-card:nth-child(2)::before { content: '💸'; }
+.resumen-card:nth-child(3)::before { content: '📈'; }
+.resumen-card:nth-child(4)::before { content: '🎯'; }
+
+/* Mejorar sección de reportes */
+.reports-container {
+    display: grid;
+    gap: 32px;
+    margin-top: 18px;
+}
+.report-section {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(67,198,172,0.08);
+    padding: 24px 18px;
+}
+.report-section h3 {
+    color: #43c6ac;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-weight: 700;
 }
 
 .grafica-diaria {
@@ -736,4 +788,4 @@ form {
         flex-direction: column;
         gap: 12px;
     }
-} 
+}

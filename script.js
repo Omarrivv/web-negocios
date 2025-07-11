@@ -815,31 +815,117 @@ function mostrarGraficaDiaria() {
                 {
                     label: 'Ingresos',
                     data: ingresos,
-                    backgroundColor: 'rgba(102, 126, 234, 0.7)'
+                    backgroundColor: 'rgba(0, 184, 148, 0.85)', // Verde vibrante
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: '#009432',
+                        font: { weight: 'bold', size: 14 }
+                    }
                 },
                 {
-                    label: 'Gastos de producción',
+                    label: 'Gastos',
                     data: gastos,
-                    backgroundColor: 'rgba(220, 53, 69, 0.5)'
+                    backgroundColor: 'rgba(255, 99, 132, 0.85)', // Rojo vibrante
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: '#b71c1c',
+                        font: { weight: 'bold', size: 14 }
+                    }
                 },
                 {
-                    label: 'Ganancia neta',
+                    label: 'Ganancia',
                     data: ganancias,
-                    backgroundColor: 'rgba(40, 167, 69, 0.5)'
+                    backgroundColor: 'rgba(9, 132, 227, 0.85)', // Azul vibrante
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: '#0652DD',
+                        font: { weight: 'bold', size: 14 }
+                    }
                 }
             ]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: 'Evolución de Ingresos, Gastos y Ganancia (últimos 7 días)' }
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 16, weight: 'bold' },
+                        color: '#22223b',
+                        usePointStyle: true
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Resumen de Ingresos, Gastos y Ganancia (últimos 7 días)',
+                    font: { size: 20, weight: 'bold' },
+                    color: '#22223b',
+                    padding: { top: 10, bottom: 20 }
+                },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#fff',
+                    titleColor: '#22223b',
+                    bodyColor: '#22223b',
+                    borderColor: '#009432',
+                    borderWidth: 2,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: S/ ${context.parsed.y.toFixed(2)}`;
+                        }
+                    }
+                },
+                datalabels: {
+                    display: true,
+                    color: '#22223b',
+                    font: { weight: 'bold', size: 14 },
+                    formatter: function(value) {
+                        return value > 0 ? `S/ ${value.toFixed(2)}` : '';
+                    }
+                }
             },
             scales: {
-                x: { stacked: true },
-                y: { stacked: false, beginAtZero: true }
+                x: {
+                    stacked: false,
+                    grid: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Día',
+                        font: { size: 16, weight: 'bold' },
+                        color: '#22223b'
+                    },
+                    ticks: {
+                        font: { size: 14, weight: 'bold' },
+                        color: '#22223b'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(200,200,200,0.15)' },
+                    title: {
+                        display: true,
+                        text: 'Soles (S/)',
+                        font: { size: 16, weight: 'bold' },
+                        color: '#22223b'
+                    },
+                    ticks: {
+                        font: { size: 14, weight: 'bold' },
+                        color: '#22223b',
+                        callback: function(value) { return `S/ ${value}`; }
+                    }
+                }
             }
-        }
+        },
+        plugins: [ChartDataLabels]
     });
 } 
 
@@ -942,33 +1028,92 @@ function exportarPDFsimple(ventas, lotes, resumen, desde, hasta) {
     try {
         let jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
         if (!jsPDF) throw new Error('No se pudo cargar jsPDF');
-        const doc = new jsPDF();
-        let y = 14;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+        // Marca de agua
+        doc.saveGraphicsState();
+        doc.setTextColor(200, 200, 200);
+        doc.setFontSize(48);
+        doc.text('OmarCodeRivera', 105, 150, { angle: 30, align: 'center', opacity: 0.12 });
+        doc.restoreGraphicsState();
+
+        // Encabezado
+        doc.setFontSize(20);
+        doc.setTextColor(67, 198, 172);
+        doc.text('Reporte de Ventas y Producción', 105, 22, { align: 'center' });
+        doc.setFontSize(11);
+        doc.setTextColor(60, 60, 60);
+        doc.text(`Desde: ${formatearFechaLatina(desde)}   Hasta: ${formatearFechaLatina(hasta)}`, 105, 30, { align: 'center' });
+
+        // Resumen
+        doc.setFontSize(13);
+        doc.setTextColor(0, 184, 148);
+        doc.text(`Ingresos: S/ ${resumen.ingresos}   Costos: S/ ${resumen.costos}   Ganancia: S/ ${resumen.ganancia}`, 105, 38, { align: 'center' });
+
+        // Tabla de Ventas
         doc.setFontSize(14);
-        doc.text('Reporte de Ventas y Producción', 14, y); y += 8;
+        doc.setTextColor(9, 132, 227);
+        doc.text('Ventas', 14, 50);
         doc.setFontSize(10);
-        doc.text(`Desde: ${formatearFechaLatina(desde)}  Hasta: ${formatearFechaLatina(hasta)}`, 14, y); y += 8;
-        doc.text(`Ingresos: S/ ${resumen.ingresos}   Costos: S/ ${resumen.costos}   Ganancia: S/ ${resumen.ganancia}`, 14, y); y += 10;
-        // Ventas
-        doc.setFontSize(12);
-        doc.text('Ventas', 14, y); y += 6;
-        doc.setFontSize(8);
-        doc.text('Producto | Cantidad | Precio Unitario | Total | Fecha | Costo Real', 14, y); y += 5;
-        ventas.forEach(v => {
-            doc.text(`${v.producto} | ${v.cantidad} | ${v.precioUnitario} | ${v.total} | ${formatearFechaLatina(v.fecha)} | ${v.costoReal || ''}`, 14, y);
-            y += 5;
-            if (y > 270) { doc.addPage(); y = 14; }
+        doc.setTextColor(60, 60, 60);
+        const ventasData = ventas.map(v => [
+            v.producto,
+            v.cantidad,
+            v.precioUnitario,
+            v.total,
+            formatearFechaLatina(v.fecha),
+            v.costoReal || ''
+        ]);
+        doc.autoTable({
+            startY: 54,
+            head: [[
+                'Producto', 'Cantidad', 'Precio Unitario', 'Total', 'Fecha', 'Costo Real'
+            ]],
+            body: ventasData,
+            theme: 'striped',
+            headStyles: { fillColor: [9, 132, 227], textColor: 255, fontStyle: 'bold' },
+            bodyStyles: { fillColor: [240, 248, 255] },
+            alternateRowStyles: { fillColor: [255, 255, 255] },
+            styles: { fontSize: 9, cellPadding: 2 },
+            margin: { left: 14, right: 14 },
+            tableWidth: 182
         });
-        y += 5;
-        doc.setFontSize(12);
-        doc.text('Lotes de Producción', 14, y); y += 6;
-        doc.setFontSize(8);
-        doc.text('Producto | Cantidad | Costo Total | Fecha | Stock | Detalle', 14, y); y += 5;
-        lotes.forEach(l => {
-            doc.text(`${l.producto} | ${l.cantidad} | ${l.costo} | ${formatearFechaLatina(l.fecha)} | ${l.stock} | ${l.detalle || ''}`, 14, y);
-            y += 5;
-            if (y > 270) { doc.addPage(); y = 14; }
+
+        // Tabla de Lotes
+        let yLotes = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 54 + ventasData.length * 6 + 10;
+        doc.setFontSize(14);
+        doc.setTextColor(255, 99, 132);
+        doc.text('Lotes de Producción', 14, yLotes);
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const lotesData = lotes.map(l => [
+            l.producto,
+            l.cantidad,
+            l.costo,
+            formatearFechaLatina(l.fecha),
+            l.stock,
+            l.detalle || ''
+        ]);
+        doc.autoTable({
+            startY: yLotes + 4,
+            head: [[
+                'Producto', 'Cantidad', 'Costo Total', 'Fecha', 'Stock', 'Detalle'
+            ]],
+            body: lotesData,
+            theme: 'striped',
+            headStyles: { fillColor: [255, 99, 132], textColor: 255, fontStyle: 'bold' },
+            bodyStyles: { fillColor: [255, 245, 245] },
+            alternateRowStyles: { fillColor: [255, 255, 255] },
+            styles: { fontSize: 9, cellPadding: 2 },
+            margin: { left: 14, right: 14 },
+            tableWidth: 182
         });
+
+        // Pie de página
+        doc.setFontSize(9);
+        doc.setTextColor(180, 180, 180);
+        doc.text('Generado con Sistema de Gestión de Productos - OmarCodeRivera', 105, 290, { align: 'center' });
+
         doc.save(`reporte_${desde}_a_${hasta}.pdf`);
         mostrarMensaje('¡Exportación a PDF completada!', 'success');
     } catch (e) {
