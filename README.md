@@ -34,6 +34,11 @@ Un sistema web completo para gestionar productos, costos, ventas y ganancias de 
 - **Evolución de ventas** en el tiempo
 - **Filtros dinámicos** para análisis específicos
 
+### 📤 Respaldo Completo (Exportar Backup)
+- **Exporta todos tus datos** (productos, lotes y ventas) en un solo archivo `.json` para respaldo o migración.
+- **Botón disponible** en la sección de Reportes: "Exportar respaldo (.json)".
+- **Alerta de éxito** al completar la descarga.
+
 ## 🚀 Cómo Usar
 
 ### 1. Inicio Rápido
@@ -87,6 +92,12 @@ Un sistema web completo para gestionar productos, costos, ventas y ganancias de 
    - **Productos más rentables**
    - **Evolución de ventas**
 
+### 7. Respaldo de Datos
+1. Ve a la sección **Reportes**
+2. Haz clic en **"Exportar respaldo (.json)"**
+3. Se descargará un archivo con todos tus datos actuales (productos, lotes y ventas)
+4. ¡Guárdalo en un lugar seguro para restaurar o migrar tu información cuando lo necesites!
+
 ## 📱 Ejemplo Práctico: Chocotejas
 
 ### Configuración del Producto
@@ -126,6 +137,11 @@ El sistema utiliza **localStorage** del navegador para guardar todos los datos:
 - ⚠️ Los datos se almacenan solo en tu navegador
 - ⚠️ Limpiar el caché del navegador eliminará los datos
 - ⚠️ Recomendamos hacer respaldos regulares
+
+### Ventajas del respaldo JSON:
+- ✅ **Migración fácil** entre dispositivos o navegadores
+- ✅ **Respaldo manual** para mayor seguridad
+- ✅ **Privacidad total** - solo tú tienes el archivo
 
 ## 🎨 Características de la Interfaz
 

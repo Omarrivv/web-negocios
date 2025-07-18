@@ -1121,3 +1121,22 @@ function exportarPDFsimple(ventas, lotes, resumen, desde, hasta) {
         console.error('Error exportando PDF:', e);
     }
 }
+
+// ====== IMPORTAR/EXPORTAR BACKUP JSON ======
+function exportarBackup() {
+    const backup = {
+        productos,
+        lotes,
+        ventas
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `respaldo_productos_${(new Date()).toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    mostrarMensaje('¡Respaldo exportado correctamente!', 'success');
+}

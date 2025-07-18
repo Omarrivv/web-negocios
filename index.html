@@ -79,6 +79,40 @@
         .btn-secondary:hover {
             background: #e9e9e9;
         }
+        body.modo-oscuro {
+            background: #181c2a;
+            color: #f3f3f3;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            border: none;
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);
+        }
+        .card, .profit-card, .modal-content {
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            border-radius: 18px;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover, .profit-card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        }
+        .btn, .btn-primary, .btn-secondary, .btn-success {
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+        .modo-oscuro .modal-content, .modo-oscuro .card, .modo-oscuro .profit-card {
+            background: #232946;
+            color: #f3f3f3;
+        }
+        .modo-oscuro .btn-primary, .modo-oscuro .btn-success {
+            filter: brightness(0.95);
+        }
     </style>
 </head>
 <body>
@@ -206,6 +240,8 @@
                             <option value="todo">Todo el tiempo</option>
                         </select>
                         <button class="btn btn-primary" onclick="abrirModalExportar()"><i class="fas fa-file-export"></i> Exportar</button>
+                        <button class="btn btn-secondary" style="margin-left:8px;" onclick="exportarBackup()"><i class="fas fa-download"></i> Exportar respaldo (.json)</button>
+                        <button class="btn btn-success" style="margin-left:8px;" onclick="abrirModalWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar reporte a WhatsApp</button>
                     </div>
                 </div>
                 
@@ -377,7 +413,58 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal WhatsApp -->
+    <div id="modalWhatsApp" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enviar reporte a WhatsApp</h3>
+                <span class="close" onclick="cerrarModal('modalWhatsApp')">&times;</span>
+            </div>
+            <form id="formWhatsApp" onsubmit="enviarReporteWhatsApp(event)">
+                <div class="form-group">
+                    <label for="numeroWhatsApp">Número de WhatsApp (+51):</label>
+                    <input type="text" id="numeroWhatsApp" required pattern="^\+51\d{9}$" placeholder="+519XXXXXXXX">
+                    <small id="errorNumero" style="color:red;display:none;">Debe ingresar un número válido (+51 y 9 dígitos).</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalWhatsApp')">Cancelar</button>
+                    <button type="submit" class="btn btn-success"><i class="fab fa-whatsapp"></i> Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <!--<p>POR OMAR RIVERA</p>-->
     <script src="script.js"></script>
+    <script>
+function abrirModalWhatsApp() {
+    document.getElementById('modalWhatsApp').style.display = 'block';
+}
+function enviarReporteWhatsApp(event) {
+    event.preventDefault();
+    const input = document.getElementById('numeroWhatsApp');
+    const error = document.getElementById('errorNumero');
+    const numero = input.value.trim();
+    if (!/^\+51\d{9}$/.test(numero)) {
+        error.style.display = 'block';
+        return;
+    } else {
+        error.style.display = 'none';
+    }
+    // Generar resumen financiero (puedes personalizar este mensaje)
+    const resumen = generarResumenFinanciero();
+    const url = `https://wa.me/${numero.replace('+','')}/?text=${encodeURIComponent(resumen)}`;
+    window.open(url, '_blank');
+    cerrarModal('modalWhatsApp');
+}
+function generarResumenFinanciero() {
+    // Aquí puedes personalizar el resumen con los datos reales de la app
+    let ingresos = document.getElementById('ingresosTotales')?.innerText || 'S/ 0.00';
+    let costos = document.getElementById('costosTotales')?.innerText || 'S/ 0.00';
+    let ganancia = document.getElementById('gananciaNeta')?.innerText || 'S/ 0.00';
+    let rentabilidad = document.getElementById('rentabilidad')?.innerText || '0%';
+    return `Resumen financiero:\nIngresos: ${ingresos}\nCostos: ${costos}\nGanancia: ${ganancia}\nRentabilidad: ${rentabilidad}`;
+}
+</script>
 </body>
 </html>
